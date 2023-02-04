@@ -40,19 +40,9 @@ def get_api_key():
     """
     Get the OpenWeatherMap API key from the configuration file
     """
+    if not os.path.exists(CONFIG_FILE):
+        set_api_key()
     config = configparser.ConfigParser()
     config.read(CONFIG_FILE)
     api_key = config.get("DEFAULT", "api_key")
     return api_key
-
-if __name__ == "__main__":
-    """
-    The main function that fetches the weather updates for the specified location
-    """
-    if not os.path.exists(CONFIG_FILE):
-        set_api_key()
-    location = input("Enter the location: ")
-    weather = get_weather(location)
-    print(
-        f"Weather in {location}: {weather['weather'][0]['description']}, {weather['main']['temp']}°C"
-    )
