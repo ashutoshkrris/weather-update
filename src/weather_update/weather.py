@@ -32,8 +32,12 @@ def set_api_key():
         config["DEFAULT"] = {"api_key": api_key}
         with open(CONFIG_FILE, "w") as configfile:
             config.write(configfile)
-    except Exception:
-        print("Error while setting the API key. Please try again.")
+    except FileNotFoundError:
+        print("Error: The specified file path does not exist.")
+    except PermissionError:
+        print("Error: You do not have permission to write to the specified file.")
+    except configparser.Error as e:
+        print(f"Error while setting the API key: {e}")
 
 
 def get_api_key():
@@ -43,6 +47,11 @@ def get_api_key():
     if not os.path.exists(CONFIG_FILE):
         set_api_key()
     config = configparser.ConfigParser()
-    config.read(CONFIG_FILE)
+    try:
+        config.read(CONFIG_FILE)
+    except PermissionError:
+        print("Error: You do not have permission to read from the specified file.")
+    except configparser.Error as e:
+        print(f"Error while reading the API key: {e}")
     api_key = config.get("DEFAULT", "api_key")
     return api_key
