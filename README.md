@@ -1,4 +1,4 @@
-# Weather Forecast Library
+# Weather Update Library
 A simple Python library to fetch the weather updates for a specified location.
 
 ## Installation
@@ -6,7 +6,7 @@ A simple Python library to fetch the weather updates for a specified location.
 You can install the library using pip:
 
 ```bash
-pip install weather-forecast
+pip install weather-update
 ```
 
 ## Usage
