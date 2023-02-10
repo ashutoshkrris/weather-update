@@ -32,26 +32,29 @@ def set_api_key():
         config["DEFAULT"] = {"api_key": api_key}
         with open(CONFIG_FILE, "w") as configfile:
             config.write(configfile)
-    except FileNotFoundError:
-        print("Error: The specified file path does not exist.")
     except PermissionError:
-        print("Error: You do not have permission to write to the specified file.")
-    except configparser.Error as e:
-        print(f"Error while setting the API key: {e}")
+        print("Error: You do not have permission to write to the file.")
+    except configparser.Error:
+        print("Error: Unable to write to the configuration file.")
 
 
 def get_api_key():
     """
     Get the OpenWeatherMap API key from the configuration file
     """
-    if not os.path.exists(CONFIG_FILE):
-        set_api_key()
     config = configparser.ConfigParser()
+    api_key = None
+
+    if not os.path.exists(CONFIG_FILE):
+        print("You don't have an API Key set for OpenWeatherMap.")
+        set_api_key()
+
     try:
         config.read(CONFIG_FILE)
-    except PermissionError:
-        print("Error: You do not have permission to read from the specified file.")
-    except configparser.Error as e:
-        print(f"Error while reading the API key: {e}")
-    api_key = config.get("DEFAULT", "api_key")
+        api_key = config.get("DEFAULT", "api_key")
+    except (configparser.NoSectionError, configparser.NoOptionError) as e:
+        print(f"Error while reading the API key:\n {e}")
+        set_api_key()
+        api_key = config.get("DEFAULT", "api_key")
+
     return api_key
